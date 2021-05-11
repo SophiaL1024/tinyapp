@@ -19,13 +19,16 @@
       </h5>
       <p class="card-text">Short URL: <a href="/u/<%= shortURL %>">
           <%= shortURL %>
-        </a></p>
-        <form method="POST" action="/urls/<%= shortURL %>" >
-          <input type="text" name="longURL">
-          <input type="submit" value="Submit">
-        </form>
+        </a></p>      
     </div>
-    <div class="card-footer text-muted"></div>
+    <div class="card-footer text-muted">
+        <h4>Edit</h4>
+        <form method="POST" action="/urls/<%= shortURL %>" >
+          <label for="input">New URL:</label>
+          <input type="text" name="longURL" placeholder="http://">
+          <input type="submit" value="Submit" style="background-color: blue;color: #fff;border-radius: 5px; border:0px;padding:4px 10px">
+        </form>
+    </div>    
   </div>
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
