@@ -1,9 +1,9 @@
+const PORT = 8080; 
 const express = require("express");
-const app = express();
-const PORT = 8080; // default port 8080
 //import body-parse to translate buffer into string
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: true }));
+const app = express();
+app.use(bodyParser.urlencoded({extended: true}));
 //Set ejs as the view engine
 app.set('view engine', 'ejs');
 
@@ -55,6 +55,13 @@ app.post('/urls', (req, res) => {
 app.post('/urls/:shortURL/delete',(req,res)=>{
   delete urlDatabase[req.params.shortURL];
   res.redirect('/urls');
+})
+//when post update the longURL in the database
+app.post('/urls/:shortURL',(req,res)=>{
+  console.log(req.body.longURL)
+  urlDatabase[req.params.shortURL]=req.body.longURL;
+  console.log(urlDatabase);
+  res.redirect('/urls')
 })
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
