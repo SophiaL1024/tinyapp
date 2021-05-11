@@ -39,6 +39,10 @@ app.get('/urls/:shortURL', (req, res) => {
   }
   res.render('urls_show', templateVars)
 });
+app.get("/u/:shortURL", (req, res) => {
+  const longURL = urlDatabase[req.params.shortURL];
+  res.redirect(longURL);
+});
 //save input long URL and a random-generated short URL to urlDatabase
 //redirect to this long URL
 app.post('/urls', (req, res) => {
