@@ -50,6 +50,12 @@ app.post('/urls', (req, res) => {
   urlDatabase[newShortUrl] = req.body.longURL;
   res.redirect(urlDatabase[newShortUrl]);
 });
+
+//when post from <form>, delete an entry in the database
+app.post('/urls/:shortURL/delete',(req,res)=>{
+  delete urlDatabase[req.params.shortURL];
+  res.redirect('/urls');
+})
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
