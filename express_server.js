@@ -11,13 +11,13 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
-
+//generrate a random short URL
 const generateRandomString = function() {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   let i = 0;
   while (i <= 6) {
-    result =result+characters.charAt(Math.floor(Math.random()*characters.length));
+    result = result + characters.charAt(Math.floor(Math.random() * characters.length));
     i++;
   }
   return result;
@@ -26,7 +26,7 @@ app.get('/urls', (req, res) => {
   const templateVars = { urls: urlDatabase };
   res.render('urls_index', templateVars)
 });
-
+//
 app.get('/urls/new', (req, res) => {
   res.render('urls_new')
 });
@@ -37,14 +37,14 @@ app.get('/urls/:shortURL', (req, res) => {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL]
   }
-    res.render('urls_show', templateVars)
+  res.render('urls_show', templateVars)
 });
-
+//save input long URL and a random-generated short URL to urlDatabase
+//redirect to this long URL
 app.post('/urls', (req, res) => {
-  // console.log(req.body);
-  urlDatabase[generateRandomString()]=req.body.longURL;
-  res.send('ok');
-  console.log(urlDatabase);
+  const newShortUrl = generateRandomString();
+  urlDatabase[newShortUrl] = req.body.longURL;
+  res.redirect(urlDatabase[newShortUrl]);
 });
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
