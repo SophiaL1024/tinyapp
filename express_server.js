@@ -103,9 +103,10 @@ app.post('/logout', (req, res) => {
 //set a user_id cookie 
 app.post('/register', (req, res) => {
 //adjust if the registration information is empty
-  // if (!req.body.email || !req.body.password) {
-  //   res.statusCode = 404;
-  // } else {
+  if (!req.body.email || !req.body.password) {
+    res.status=404;
+    res.send(res.statusCode);
+  } else {
     const userId = generateRandomString();
     users[userId] = {
       id: userId,
@@ -114,7 +115,7 @@ app.post('/register', (req, res) => {
     };
     res.cookie('user_id', userId)
     res.redirect('/urls')
-  // }
+  }
 })
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
