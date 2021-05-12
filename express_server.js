@@ -46,14 +46,12 @@ const lookUpEmail = function(email) {
 app.get('/urls', (req, res) => {
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies.username,
     user: users[req.cookies.user_id]
   };
   res.render('urls_index', templateVars)
 });
 app.get('/urls/new', (req, res) => {
   const templateVars = {
-    username: req.cookies.username,
     user: users[req.cookies.user_id]
   };
   res.render('urls_new', templateVars);
@@ -63,7 +61,6 @@ app.get('/urls/:shortURL', (req, res) => {
     //define shortURL by route parameters 
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL],
-    username: req.cookies.username,
     user: users[req.cookies.user_id]
   };
   res.render('urls_show', templateVars)
@@ -74,14 +71,12 @@ app.get("/u/:shortURL", (req, res) => {
 });
 app.get('/register', (req, res) => {
   const templateVars = {
-    username: req.cookies.username,
     user: users[req.cookies.user_id]
   };
   res.render('urls_register', templateVars);
 })
-app.get('/login',(req,res)=>{
+app.get('/login', (req, res) => {
   const templateVars = {
-    username: req.cookies.username,
     user: users[req.cookies.user_id]
   };
   res.render('urls_login', templateVars);
@@ -104,7 +99,7 @@ app.post('/login', (req, res) => {
   res.cookie('username', req.body.username);
   const templateVars = {
     urls: urlDatabase,
-    username: req.cookies.username,
+
     user: users[req.cookie.user_id]
   };
   res.redirect('/urls');
