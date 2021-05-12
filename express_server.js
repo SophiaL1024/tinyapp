@@ -23,7 +23,9 @@ const generateRandomString = function() {
   return result;
 };
 app.get('/urls', (req, res) => {
-  const templateVars = { urls: urlDatabase };
+  const templateVars = { 
+    username: req.cookies['username'],
+    urls: urlDatabase };
   res.render('urls_index', templateVars)
 });
 //
@@ -70,8 +72,13 @@ app.post('/login', (req, res) => {
     urls: urlDatabase
   };
   res.render("urls_index", templateVars);
-  res.redirect('/urls');
 })
+//clear cookie and logout
+app.post('/logout',(req,res)=>{
+  res.clearCookie('username');
+  res.redirect('/urls')
+})
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
