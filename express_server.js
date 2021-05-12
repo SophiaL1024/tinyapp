@@ -11,7 +11,7 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
-//generrate a random short URL
+//generate a random short URL
 const generateRandomString = function() {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
@@ -49,6 +49,10 @@ app.get("/u/:shortURL", (req, res) => {
   const longURL = urlDatabase[req.params.shortURL];
   res.redirect(longURL);
 });
+
+app.get('/register',(req,res)=>{
+res.render('urls_register')
+})
 //save input long URL and a random-generated short URL to urlDatabase
 //redirect to this long URL
 app.post('/urls', (req, res) => {
@@ -71,12 +75,7 @@ app.post('/urls/:shortURL', (req, res) => {
 //set a cookie to the value submitted in the request body via the login form
 app.post('/login', (req, res) => {
   res.cookie('username', req.body.username);
-  const templateVars = {
-    username: req.cookies['username'],
-    urls: urlDatabase
-  };
   res.redirect('/urls')
-  res.render("urls_index", templateVars);
 })
 //clear cookie and logoutusername: req.cookies['username']
 app.post('/logout',(req,res)=>{
