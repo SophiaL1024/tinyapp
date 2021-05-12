@@ -77,7 +77,14 @@ app.get('/register', (req, res) => {
     username: req.cookies.username,
     user: users[req.cookies.user_id]
   };
-  res.render('urls_register', templateVars)
+  res.render('urls_register', templateVars);
+})
+app.get('/login',(req,res)=>{
+  const templateVars = {
+    username: req.cookies.username,
+    user: users[req.cookies.user_id]
+  };
+  res.render('urls_login', templateVars);
 })
 //save input long URL and a random-generated shortusers:username URL to urlDatabase
 //redirect to this long URL
