@@ -75,6 +75,7 @@ app.post('/login', (req, res) => {
     username: req.cookies['username'],
     urls: urlDatabase
   };
+  res.redirect('/urls')
   res.render("urls_index", templateVars);
 })
 //clear cookie and logoutusername: req.cookies['username']
