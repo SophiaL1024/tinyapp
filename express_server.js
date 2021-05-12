@@ -34,6 +34,15 @@ const users = {
     password: "dishwasher-funk"
   }
 }
+//look up given email in the users database
+const lookUpEmail = function(email) {
+  for (const user in users) {
+    if (users[user].email === email) {
+      return true;
+    }
+  }
+  return false;
+}
 app.get('/urls', (req, res) => {
   const templateVars = {
     urls: urlDatabase,
@@ -103,10 +112,11 @@ app.post('/logout', (req, res) => {
 //store register information in users object
 //set a user_id cookie 
 app.post('/register', (req, res) => {
-//adjust if the registration information is empty
+  //adjust if the registration information is valide
   if (!req.body.email || !req.body.password) {
-    res.statusCode=404;
-    res.send(res.status);
+    res.sendStatus(404);
+  } else if (lookUpEmail(req.body.email)) {
+    res.sendStatus(400);
   } else {
     const userId = generateRandomString();
     users[userId] = {
