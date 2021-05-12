@@ -30,14 +30,18 @@ app.get('/urls', (req, res) => {
 });
 //
 app.get('/urls/new', (req, res) => {
-  res.render('urls_new');
+  const templateVars = { 
+    username: req.cookies['username']
+  };
+  res.render('urls_new',templateVars);
 });
 
 app.get('/urls/:shortURL', (req, res) => {
   const templateVars = {
     //define shortURL by route parameters 
     shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL]
+    longURL: urlDatabase[req.params.shortURL],
+    username: req.cookies['username']
   };
   res.render('urls_show', templateVars)
 });
@@ -50,7 +54,7 @@ app.get("/u/:shortURL", (req, res) => {
 app.post('/urls', (req, res) => {
   const newShortUrl = generateRandomString();
   urlDatabase[newShortUrl] = req.body.longURL;
-  res.redirect(urlDatabase[newShortUrl]);
+  res.redirect(`/urls/${newShortUrl}`);
 });
 
 //when post from <form>, delete an entry in the database
@@ -73,7 +77,7 @@ app.post('/login', (req, res) => {
   };
   res.render("urls_index", templateVars);
 })
-//clear cookie and logout
+//clear cookie and logoutusername: req.cookies['username']
 app.post('/logout',(req,res)=>{
   res.clearCookie('username');
   res.redirect('/urls')
