@@ -1,10 +1,10 @@
 const PORT = 8080; 
 const express = require("express");
-//import body-parse to translate buffer into string
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
 const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
-//Set ejs as the view engine
+app.use(cookieParser());
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
@@ -56,10 +56,16 @@ app.post('/urls/:shortURL/delete',(req,res)=>{
   delete urlDatabase[req.params.shortURL];
   res.redirect('/urls');
 })
-//when post update the longURL in the database
+//when post, update the longURL in the database
 app.post('/urls/:shortURL',(req,res)=>{
   urlDatabase[req.params.shortURL]=req.body.longURL;
   res.redirect('/urls')
+})
+//handle a post request to login
+//set a cookie to the value submitted in the request body via the login form
+app.post('/login',(req,res)=>{
+  res.cookie('username',req.body.username);
+    res.redirect('/urls');
 })
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
