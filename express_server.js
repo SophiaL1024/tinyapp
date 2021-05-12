@@ -97,6 +97,7 @@ app.post('/login', (req, res) => {
 //clear cookie and logout
 app.post('/logout', (req, res) => {
   res.clearCookie('username');
+  res.clearCookie('user_id');
   res.redirect('/urls');
 })
 //store register information in users object
@@ -104,8 +105,8 @@ app.post('/logout', (req, res) => {
 app.post('/register', (req, res) => {
 //adjust if the registration information is empty
   if (!req.body.email || !req.body.password) {
-    res.status=404;
-    res.send(res.statusCode);
+    res.statusCode=404;
+    res.send(res.status);
   } else {
     const userId = generateRandomString();
     users[userId] = {
