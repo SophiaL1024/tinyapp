@@ -2,12 +2,14 @@ const PORT = 8080;
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
+const cookieParser = require('cookie-parser');
 const bcrypt = require('bcrypt');
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(cookieSession({
   name: 'session',
-  keys: ['it is my key','you should not peep']
+  keys: ['it is my key', 'you should not peep']
 }))
 app.set('view engine', 'ejs');
 
@@ -154,39 +156,48 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 //set a cookie to the value submitted in the request body via the login form
 app.post('/login', (req, res) => {
   if (!lookUpEmail(req.body.email)) {
-    res.sendStatus(403);
+    return res.status(403).send('Sorry, I don\'t recognize this email');
   }
   //check if the request password equal to the password in users database
-  else if (!bcrypt.compareSync(req.body.password, lookUpEmail(req.body.email).password)) {
-    res.sendStatus(403);
-  } else {
-    res.cookie('user_id', lookUpEmail(req.body.email).id);
-    res.redirect('/urls');
-  }
-})
+  bcrypt.compare(req.body.password, lookUpEmail(req.body.email).password)
+    .then((resolve) => {
+      if (resolve) {
+        res.cookie('user_id', lookUpEmail(req.body.email).id);
+        res.redirect('/urls');
+      }else{
+        return res.status(403).send('Email or password is incorrect');
+      }
+    });
+});
 
 //store register information in users object
 //set a user_id cookie 
 app.post('/register', (req, res) => {
-  //adjust if the registration information is valide
+  //judge if the registration information is valide
   if (!req.body.email || !req.body.password) {
-    res.sendStatus(404);
+    return res.status(404).send('Email or password should not be empty');
   } else if (lookUpEmail(req.body.email)) {
-    res.sendStatus(400);
-  } else {
-    const userId = generateRandomString();
-    //use bcrypt to store password
-    const password = req.body.password;
-    const hashedPassword = bcrypt.hashSync(password, 10);
-    users[userId] = {
-      id: userId,
-      email: req.body.email,
-      password: hashedPassword
-    };
-    res.cookie('user_id', userId);
-    res.redirect('/urls');
+    return res.status(400).send('Sorry, this email has been registered');
   }
-})
+  const userId = generateRandomString();
+  //use bcrypt to store password
+  const email = req.body.email;
+  const password = req.body.password;
+  bcrypt.genSalt(10)
+    .then((salt) => {
+      return bcrypt.hash(password, salt);
+    })
+    .then((hash) => {
+      users[userId] = {
+        id: userId,
+        email: email,
+        password: hash
+      };
+      res.redirect('/urls');
+    });
+  res.cookie('user_id', userId);
+
+});
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
