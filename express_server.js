@@ -1,11 +1,14 @@
 const PORT = 8080;
 const express = require("express");
 const bodyParser = require("body-parser");
-const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['it is my key','you should not peep']
+}))
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
