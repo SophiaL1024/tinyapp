@@ -3,8 +3,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
-const app = express();
 const cookieParser = require('cookie-parser');
+const { getUserByEmail } = require('./helpers');
+const app = express();
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({
@@ -46,14 +47,7 @@ const users = {
     password: bcrypt.hashSync("dishwasher-funk", 10)
   }
 }
-//look up given email in the users database
-const getUserByEmail = function(email, database) {
-  for (const user in database) {
-    if (database[user].email === email) {
-      return database[user];
-    }
-  }
-}
+
 const urlsForUser = function(id) {
   const userDataBase = {};
   for (const shortURL in urlDatabase) {
@@ -154,15 +148,15 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 //handle a post request to login
 //set a cookie to the value submitted in the request body via the login form
 app.post('/login', (req, res) => {
-  if (! getUserByEmail(req.body.email,users)) {
+  if (!getUserByEmail(req.body.email, users)) {
     return res.status(403).send('Sorry, I don\'t recognize this email');
   }
   //check if the request password equal to the password in users database
-  bcrypt.compare(req.body.password,  getUserByEmail(req.body.email,users,users).password)
+  bcrypt.compare(req.body.password, getUserByEmail(req.body.email, users, users).password)
     .then((resolve) => {
       if (resolve) {
         //encrypted cookie
-        req.session.user_id = getUserByEmail(req.body.email,users).id;
+        req.session.user_id = getUserByEmail(req.body.email, users).id;
         res.redirect('/urls');
       } else {
         return res.status(403).send('Email or password is incorrect');
@@ -176,7 +170,7 @@ app.post('/register', (req, res) => {
   //judge if the registration information is valide
   if (!req.body.email || !req.body.password) {
     return res.status(404).send('Email or password should not be empty');
-  } else if (getUserByEmail(req.body.email,users)) {
+  } else if (getUserByEmail(req.body.email, users)) {
     return res.status(400).send('Sorry, this email has been registered');
   }
   const userId = generateRandomString();
