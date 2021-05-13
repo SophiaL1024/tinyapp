@@ -38,7 +38,7 @@ const users = {
 const lookUpEmail = function(email) {
   for (const user in users) {
     if (users[user].email === email) {
-      return true;
+      return users[user];
     }
   }
   return false;
@@ -96,14 +96,14 @@ app.post('/urls/:shortURL', (req, res) => {
 //handle a post request to login
 //set a cookie to the value submitted in the request body via the login form
 app.post('/login', (req, res) => {
-  res.cookie('username', req.body.username);
-  const templateVars = {
-    urls: urlDatabase,
-
-    user: users[req.cookie.user_id]
-  };
-  res.redirect('/urls');
-  res.render("urls_index", templateVars);
+  if (!lookUpEmail(req.body.email)) {
+    res.sendStatus(403);
+  } else if (lookUpEmail(req.body.email).password !== req.body.password) {
+    res.sendStatus(403);
+  } else {
+    res.cookie('user_id', lookUpEmail(req.body.email).id);
+    res.redirect('/urls');
+  }
 })
 //clear cookie and logout
 app.post('/logout', (req, res) => {

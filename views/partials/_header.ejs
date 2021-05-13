@@ -12,6 +12,7 @@
       </div>
       <button><a href="/register">Register</a></button>
       <% if(user){%>
+        <span>Logged In As: <%= user.email %></span>
         <button><a href="/logout">Logout</a></button>
         <%}else{%>
           <button><a href="/login">Login</a></button>
