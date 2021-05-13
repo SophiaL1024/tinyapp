@@ -15,38 +15,44 @@
   <%- include('partials/_header') %>
     <main style="margin: 1em;">
       <h3>My URLs</h3>
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Short URL</th>
-            <th scope="col">Long URL</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% for(let url in urls) { %>
+      <% if(!message){%>
+        <table class="table">
+          <thead>
             <tr>
-              <td>
-                <%= url %>
-              </td>
-              <td>
-                <%= urls[url]['longURL'] %>
-              </td>
-              <td>
-                <button style="background-color: #fff;padding: 5px 20px;border-color: blue;border-radius: 5px;"><a
-                    href="/urls/<%= url %>">Edit</a></button>
-              </td>
-              <td>
-                <form method="POST" action="/urls/<%= url %>/delete">
-                  <input type="submit" value="Delete"
-                    style="color: red; border-color: red;padding:5px 15px;border-radius:5px;background-color: #fff" />
-                </form>
-              </td>
+              <th scope="col">Short URL</th>
+              <th scope="col">Long URL</th>
+              <th scope="col">Edit</th>
+              <th scope="col">Delete</th>
             </tr>
-            <% } %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <% for(let url in urls) { %>
+              <tr>
+                <td>
+                  <%= url %>
+                </td>
+                <td>
+                  <%= urls[url] %>
+                </td>
+                <td>
+                  <button style="background-color: #fff;padding: 5px 20px;border-color: blue;border-radius: 5px;"><a
+                      href="/urls/<%= url %>">Edit</a></button>
+                </td>
+                <td>
+                  <form method="POST" action="/urls/<%= url %>/delete">
+                    <input type="submit" value="Delete"
+                      style="color: red; border-color: red;padding:5px 15px;border-radius:5px;background-color: #fff" />
+                  </form>
+                </td>
+              </tr>
+              <% } %>
+          </tbody>
+        </table>
+        <%}else{%>
+          <p>
+            <%= message %>
+          </p>
+          <%}%>
     </main>
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
