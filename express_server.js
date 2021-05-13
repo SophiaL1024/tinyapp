@@ -9,7 +9,7 @@ const app = express();
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({
-  name: 'myCookiesession',
+  name: 'myCookieSession',
   keys: ['it is my key', 'you should not peep']
 }))
 app.set('view engine', 'ejs');
@@ -113,11 +113,7 @@ app.get('/login', (req, res) => {
   };
   res.render('urls_login', templateVars);
 })
-//clear cookie and logout
-app.get('/logout', (req, res) => {
-  req.session = null;
-  res.redirect('/urls');
-})
+
 //save input long URL and a random-generated shortURL to urlDatabase
 //redirect to this long URL
 app.post('/urls', (req, res) => {
@@ -193,7 +189,11 @@ app.post('/register', (req, res) => {
     });
 
 });
-
+//clear cookie and logout
+app.post('/logout', (req, res) => {
+  req.session = null;
+  res.redirect('/urls');
+})
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });

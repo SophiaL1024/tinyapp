@@ -11,18 +11,15 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
       <% if(user){%>
-        <div>
-          <span style="margin-right: 15px;">Logged In As: <%= user.email %></span>
-          <button style="background-color:transparent;border-radius: 5px;width: 90px;height: 40px;"><a href="/logout"
-              style="color: black;">Logout</a></button>
+        <div style="margin: 0 15px; ">Logged In As: <%= user.email %>
         </div>
+        <form action="/logout" method="POST"><button
+            style="background-color:transparent;border-radius: 5px;width: 90px;height: 40px;">logout</button></form>
         <%}else{%>
-
           <a class="nav-item nav-link" href="/login"
             style="text-decoration: none;color:rgba(255, 255, 255, 0.5);margin-right: 20px;">Login</a>
           <a class="nav-item nav-link" href="/register"
             style="text-decoration: none;color:rgba(255, 255, 255, 0.5);">Register</a>
-
           <%}%>
     </div>
   </nav>
