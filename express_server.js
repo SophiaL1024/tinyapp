@@ -81,7 +81,12 @@ app.get('/login', (req, res) => {
   };
   res.render('urls_login', templateVars);
 })
-//save input long URL and a random-generated shortusers:username URL to urlDatabase
+//clear cookie and logout
+app.get('/logout', (req, res) => {
+  res.clearCookie('user_id');
+  res.redirect('/urls');
+})
+//save input long URL and a random-generated shortURL to urlDatabase
 //redirect to this long URL
 app.post('/urls', (req, res) => {
   const newShortUrl = generateRandomString();
@@ -105,11 +110,7 @@ app.post('/login', (req, res) => {
     res.redirect('/urls');
   }
 })
-//clear cookie and logout
-app.post('/logout', (req, res) => {
-  res.clearCookie('user_id');
-  res.redirect('/urls');
-})
+
 //store register information in users object
 //set a user_id cookie 
 app.post('/register', (req, res) => {
