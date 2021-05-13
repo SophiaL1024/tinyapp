@@ -8,8 +8,12 @@ app.use(cookieParser());
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    longURL:"http://www.lighthouselabs.ca"
+  },
+  "9sm5xK":{
+    longURL:"http://www.google.com",
+  } 
 };
 //generate a random short URL
 const generateRandomString = function() {
@@ -94,7 +98,10 @@ app.get('/logout', (req, res) => {
 //redirect to this long URL
 app.post('/urls', (req, res) => {
   const newShortUrl = generateRandomString();
-  urlDatabase[newShortUrl] = req.body.longURL;
+  urlDatabase[newShortUrl]={};
+  urlDatabase[newShortUrl].longURL = req.body.longURL;
+  //add user_id to the urlDatabase 
+  urlDatabase[newShortUrl].userID =req.cookies['user_id'];
   res.redirect(`/urls/${newShortUrl}`);
 });
 
