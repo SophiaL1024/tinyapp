@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 const cookieParser = require('cookie-parser');
+const methodOverride = require('method-override');
 const { getUserByEmail } = require('./helpers');
 const app = express();
 app.use(cookieParser());
@@ -12,6 +13,7 @@ app.use(cookieSession({
   name: 'myCookieSession',
   keys: ['it is my key', 'you should not peep']
 }))
+app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
 
 const urlDatabase = {
@@ -125,7 +127,7 @@ app.post('/urls', (req, res) => {
   res.redirect(`/urls/${newShortUrl}`);
 });
 
-app.post('/urls/:shortURL', (req, res) => {
+app.put('/urls/:shortURL', (req, res) => {
   if (req.session.user_id) {
     urlDatabase[req.params.shortURL].longURL = req.body.longURL;
     res.redirect('/urls');
@@ -133,7 +135,7 @@ app.post('/urls/:shortURL', (req, res) => {
     res.sendStatus(403);
   }
 })
-app.post('/urls/:shortURL/delete', (req, res) => {
+app.delete('/urls/:shortURL/delete', (req, res) => {
   if (req.session.user_id) {
     delete urlDatabase[req.params.shortURL];
     res.redirect('/urls');

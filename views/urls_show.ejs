@@ -23,7 +23,7 @@
     </div>
     <div class="card-footer text-muted">
         <h4>Edit</h4>
-        <form method="POST" action="/urls/<%= shortURL %>" >
+        <form method="POST" action="/urls/<%= shortURL %>?_method=PUT" >
           <label for="input">New URL:</label>
           <input type="text" name="longURL" placeholder="http://">
           <input type="submit" value="Submit" style="background-color: blue;color: #fff;border-radius: 5px; border:0px;padding:4px 10px">
