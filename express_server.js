@@ -2,6 +2,7 @@ const PORT = 8080;
 const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -131,18 +132,18 @@ app.post('/urls', (req, res) => {
 });
 
 app.post('/urls/:shortURL', (req, res) => {
-  if (req.cookies['user_id']) {  
-  urlDatabase[req.params.shortURL].longURL = req.body.longURL;
-  res.redirect('/urls');
-  }else{
+  if (req.cookies['user_id']) {
+    urlDatabase[req.params.shortURL].longURL = req.body.longURL;
+    res.redirect('/urls');
+  } else {
     res.sendStatus(403);
   }
 })
-app.post('/urls/:shortURL/delete',(req,res)=>{
-  if (req.cookies['user_id']) {    
+app.post('/urls/:shortURL/delete', (req, res) => {
+  if (req.cookies['user_id']) {
     delete urlDatabase[req.params.shortURL];
     res.redirect('/urls');
-  }else{
+  } else {
     res.sendStatus(403);
   }
 })
@@ -151,7 +152,9 @@ app.post('/urls/:shortURL/delete',(req,res)=>{
 app.post('/login', (req, res) => {
   if (!lookUpEmail(req.body.email)) {
     res.sendStatus(403);
-  } else if (lookUpEmail(req.body.email).password !== req.body.password) {
+  }
+  //check if the request password equal to the password in users database
+  else if (!bcrypt.compareSync(req.body.password, lookUpEmail(req.body.email).password)) {
     res.sendStatus(403);
   } else {
     res.cookie('user_id', lookUpEmail(req.body.email).id);
@@ -169,13 +172,16 @@ app.post('/register', (req, res) => {
     res.sendStatus(400);
   } else {
     const userId = generateRandomString();
+    //use bcrypt to store password
+    const password = req.body.password;
+    const hashedPassword = bcrypt.hashSync(password, 10);
     users[userId] = {
       id: userId,
       email: req.body.email,
-      password: req.body.password
+      password: hashedPassword
     };
-    res.cookie('user_id', userId)
-    res.redirect('/urls')
+    res.cookie('user_id', userId);
+    res.redirect('/urls');
   }
 })
 app.listen(PORT, () => {
