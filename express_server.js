@@ -126,7 +126,7 @@ app.post('/urls', (req, res) => {
   urlDatabase[newShortUrl] = {};
   urlDatabase[newShortUrl].longURL = req.body.longURL;
   //add user_id to the urlDatabase 
-  urlDatabase[newShortUrl].userID = req.cookies['user_id'];
+  urlDatabase[newShortUrl].ID = req.cookies['user_id'];
   res.redirect(`/urls/${newShortUrl}`);
 });
 
