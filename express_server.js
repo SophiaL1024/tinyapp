@@ -131,8 +131,12 @@ app.post('/urls', (req, res) => {
 });
 
 app.post('/urls/:shortURL', (req, res) => {
+  if (req.cookies['user_id']) {  
   urlDatabase[req.params.shortURL].longURL = req.body.longURL;
   res.redirect('/urls');
+  }else{
+    res.sendStatus(403);
+  }
 })
 app.post('/urls/:shortURL/delete',(req,res)=>{
   if (req.cookies['user_id']) {    
