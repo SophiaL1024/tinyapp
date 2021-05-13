@@ -9,10 +9,12 @@ app.set('view engine', 'ejs');
 
 const urlDatabase = {
   "b2xVn2": {
-    longURL: "http://www.lighthouselabs.ca"
+    longURL: "http://www.lighthouselabs.ca",
+    ID:"userRandomID",
   },
   "9sm5xK": {
     longURL: "http://www.google.com",
+    ID:"user2RandomID"
   }
 };
 //generate a random short URL
@@ -47,12 +49,25 @@ const lookUpEmail = function(email) {
   }
   return false;
 }
+const urlsForUser = function(id) {
+  const userDataBase = {};
+  for (const shortURL in urlDatabase) {
+    if (urlDatabase[shortURL].ID === id) {
+      userDataBase[shortURL] = urlDatabase[shortURL].longURL;
+    }
+  }
+  return userDataBase;
+}
 app.get('/urls', (req, res) => {
-  const templateVars = {
-    urls: urlDatabase,
-    user: users[req.cookies.user_id]
-  };
-  res.render('urls_index', templateVars)
+  if (!req.cookies['user_id']) {
+    res.redirect('/login');
+  } else {
+    const templateVars = {
+      urls: urlDatabase,
+      user: users[req.cookies.user_id]
+    };
+    res.render('urls_index', templateVars);
+  }
 });
 app.get('/urls/new', (req, res) => {
   if (!req.cookies.user_id) {
