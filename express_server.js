@@ -70,7 +70,7 @@ app.get('/urls', (req, res) => {
     const templateVars = {
       urls: urlsForUser(req.cookies['user_id']),
       user: users[req.cookies.user_id],
-      message:''
+      message: ''
     };
     res.render('urls_index', templateVars);
   }
@@ -133,6 +133,14 @@ app.post('/urls', (req, res) => {
 app.post('/urls/:shortURL', (req, res) => {
   urlDatabase[req.params.shortURL].longURL = req.body.longURL;
   res.redirect('/urls');
+})
+app.post('/urls/:shortURL/delete',(req,res)=>{
+  if (req.cookies['user_id']) {    
+    delete urlDatabase[req.params.shortURL];
+    res.redirect('/urls');
+  }else{
+    res.sendStatus(403);
+  }
 })
 //handle a post request to login
 //set a cookie to the value submitted in the request body via the login form
