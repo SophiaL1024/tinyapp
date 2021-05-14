@@ -3,11 +3,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
-const { getUserByEmail } = require('./helpers');
+const { getUserByEmail, lookUpCookie } = require('./helpers');
 const app = express();
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({
   name: 'myCookieSession',
@@ -15,6 +15,7 @@ app.use(cookieSession({
 }))
 app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
+
 
 const urlDatabase = {
   "b2xVn2": {
@@ -49,7 +50,6 @@ const users = {
     password: bcrypt.hashSync("dishwasher-funk", 10)
   }
 }
-
 const urlsForUser = function(id) {
   const userDataBase = {};
   for (const shortURL in urlDatabase) {
@@ -60,6 +60,10 @@ const urlsForUser = function(id) {
   return userDataBase;
 }
 let visitTimes = 0;
+let countVisitors = 0;
+const cookieDataBase = {};
+
+
 app.get('/urls', (req, res) => {
   //if user has not logged in,
   if (!req.session.user_id) {
@@ -77,6 +81,8 @@ app.get('/urls', (req, res) => {
     res.render('urls_index', templateVars);
   }
 });
+
+
 app.get('/urls/new', (req, res) => {
   if (!req.session.user_id) {
     res.redirect('/login');
@@ -87,37 +93,53 @@ app.get('/urls/new', (req, res) => {
     res.render('urls_new', templateVars);
   }
 });
+
+
 app.get('/urls/:shortURL', (req, res) => {
   if (!req.session.user_id) {
     res.redirect('/login');
   } else {
-    visitTimes++;
     const templateVars = {
       //define shortURL by route parameters 
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL].longURL,
       user: users[req.session.user_id],
-      visitTimes
+      visitTimes,
+      countVisitors
     };
+    // console.log(req.session.myCookieSession);
     res.render('urls_show', templateVars);
   }
 });
+
+
 app.get("/u/:shortURL", (req, res) => {
+  visitTimes++;
+  if (!lookUpCookie(req.session._ctx.headers.cookie, cookieDataBase)) {
+    countVisitors++;
+    cookieDataBase[req.session.user_id] = req.session._ctx.headers.cookie;
+    console.log(req.session._ctx.headers.cookie);
+  }
   const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
+
+
 app.get('/register', (req, res) => {
   const templateVars = {
     user: users[req.session.user_id]
   };
   res.render('urls_register', templateVars);
-})
+});
+
+
 app.get('/login', (req, res) => {
   const templateVars = {
     user: users[req.session.user_id]
   };
   res.render('urls_login', templateVars);
-})
+});
+
 
 //save input long URL and a random-generated shortURL to urlDatabase
 //redirect to this long URL
@@ -130,6 +152,7 @@ app.post('/urls', (req, res) => {
   res.redirect(`/urls/${newShortUrl}`);
 });
 
+
 app.put('/urls/:shortURL', (req, res) => {
   if (req.session.user_id) {
     urlDatabase[req.params.shortURL].longURL = req.body.longURL;
@@ -137,7 +160,9 @@ app.put('/urls/:shortURL', (req, res) => {
   } else {
     res.sendStatus(403);
   }
-})
+});
+
+
 app.delete('/urls/:shortURL/delete', (req, res) => {
   if (req.session.user_id) {
     delete urlDatabase[req.params.shortURL];
@@ -145,7 +170,9 @@ app.delete('/urls/:shortURL/delete', (req, res) => {
   } else {
     res.sendStatus(403);
   }
-})
+});
+
+
 //handle a post request to login
 //set a cookie to the value submitted in the request body via the login form
 app.post('/login', (req, res) => {
@@ -164,6 +191,7 @@ app.post('/login', (req, res) => {
       }
     });
 });
+
 
 //store register information in users object
 //set a user_id cookie 
@@ -194,11 +222,15 @@ app.post('/register', (req, res) => {
     });
 
 });
+
+
 //clear cookie and logout
 app.post('/logout', (req, res) => {
   req.session = null;
   res.redirect('/urls');
 })
+
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });

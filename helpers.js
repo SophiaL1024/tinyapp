@@ -6,4 +6,15 @@ const getUserByEmail = function(email, database) {
     }
   }
 };
-module.exports = { getUserByEmail };
+const lookUpCookie = function(cookie, cookieDataBase) {
+  for (let c in cookieDataBase) {
+    if (cookie === cookieDataBase[c]) {
+      return true;
+    }
+  }
+  return false;
+};
+module.exports = {
+  getUserByEmail,
+  lookUpCookie
+};
