@@ -59,6 +59,7 @@ const urlsForUser = function(id) {
   }
   return userDataBase;
 }
+let visitTimes = 0;
 app.get('/urls', (req, res) => {
   //if user has not logged in,
   if (!req.session.user_id) {
@@ -90,13 +91,15 @@ app.get('/urls/:shortURL', (req, res) => {
   if (!req.session.user_id) {
     res.redirect('/login');
   } else {
+    visitTimes++;
     const templateVars = {
       //define shortURL by route parameters 
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL].longURL,
-      user: users[req.session.user_id]
+      user: users[req.session.user_id],
+      visitTimes
     };
-    res.render('urls_show', templateVars)
+    res.render('urls_show', templateVars);
   }
 });
 app.get("/u/:shortURL", (req, res) => {
