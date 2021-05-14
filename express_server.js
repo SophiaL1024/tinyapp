@@ -30,7 +30,8 @@ app.get('/urls', (req, res) => {
     const templateVars = {
       urls: urlsForUser(req.session.user_id),
       user: users[req.session.user_id],
-      message: ''
+      message: '',
+      urlDatabase
     };
     res.render('urls_index', templateVars);
   }
@@ -42,7 +43,8 @@ app.get('/urls/new', (req, res) => {
     res.redirect('/login');
   } else {
     const templateVars = {
-      user: users[req.session.user_id]
+      user: users[req.session.user_id],
+      urlDatabase      
     };
     res.render('urls_new', templateVars);
   }
@@ -108,6 +110,9 @@ app.post('/urls', (req, res) => {
   urlDatabase[newShortUrl].longURL = req.body.longURL;
   //add user_id to the urlDatabase 
   urlDatabase[newShortUrl].ID = req.session.user_id;
+  urlDatabase[newShortUrl].visitTime=[];
+  urlDatabase[newShortUrl].visitorId=[];
+  urlDatabase[newShortUrl].visitorCookie=[];
   res.redirect(`/urls/${newShortUrl}`);
 });
 

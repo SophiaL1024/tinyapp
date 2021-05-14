@@ -29,8 +29,7 @@
         </form>
       </div>
       <span>This short URL has been visited <%= urlDatabase[shortURL].visitTime.length %> times, by <%=
-            urlDatabase[shortURL].visitorCookie.length %>
-            visitors.</span>
+            urlDatabase[shortURL].visitorCookie.length %> visitors.</span>
       <table>
         <th>Visit Log</th>
         <tbody>
@@ -38,18 +37,16 @@
             <td>Visit Time</td>
             <td>Visitor ID</td>
           </tr>
-          <% for(let url in urlDatabase){ 
-            for(let n in url){%>
-            <tr>
+          <tr>
+            <% for(let n in urlDatabase[shortURL].visitTime){%>
               <td>
-                <%= urlDatabase[url].visitTime[n] %>
-              </td>
-              <td>
-                <%= urlDatabase[url].visitorId[n] %>
-              </td>
-            </tr>
-            <%} 
-          } %>
+                <%= urlDatabase[shortURL].visitTime[n] %>
+              </td>              
+                <td>
+                  <%= urlDatabase[shortURL].visitorId[n] %>
+                </td>
+          </tr>
+          <%} %>
         </tbody>
       </table>
       <div class="card-footer text-muted">
