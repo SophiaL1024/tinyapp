@@ -5,7 +5,8 @@ const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
 // const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
-const { getUserByEmail, lookUpCookie } = require('./helpers');
+const { getUserByEmail, lookUpCookie, generateRandomString, urlsForUser } = require('./helpers');
+const { urlDatabase, users } = require('./database')
 const app = express();
 // app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -15,53 +16,6 @@ app.use(cookieSession({
 }))
 app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
-
-
-const urlDatabase = {
-  "b2xVn2": {
-    longURL: "http://www.lighthouselabs.ca",
-    ID: "userRandomID",
-  },
-  "9sm5xK": {
-    longURL: "http://www.google.com",
-    ID: "user2RandomID"
-  }
-};
-//generate a random short URL
-const generateRandomString = function() {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  let result = '';
-  let i = 0;
-  while (i <= 6) {
-    result = result + characters.charAt(Math.floor(Math.random() * characters.length));
-    i++;
-  }
-  return result;
-};
-const users = {
-  "userRandomID": {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: bcrypt.hashSync("purple-monkey-dinosaur", 10)
-  },
-  "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: bcrypt.hashSync("dishwasher-funk", 10)
-  }
-}
-const urlsForUser = function(id) {
-  const userDataBase = {};
-  for (const shortURL in urlDatabase) {
-    if (urlDatabase[shortURL].ID === id) {
-      userDataBase[shortURL] = urlDatabase[shortURL].longURL;
-    }
-  }
-  return userDataBase;
-}
-let visitTimes = 0;
-let countVisitors = 0;
-const cookieDataBase = {};
 
 
 app.get('/urls', (req, res) => {
@@ -104,8 +58,7 @@ app.get('/urls/:shortURL', (req, res) => {
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL].longURL,
       user: users[req.session.user_id],
-      visitTimes,
-      countVisitors
+      urlDatabase
     };
     // console.log(req.session.myCookieSession);
     res.render('urls_show', templateVars);
@@ -114,12 +67,18 @@ app.get('/urls/:shortURL', (req, res) => {
 
 
 app.get("/u/:shortURL", (req, res) => {
-  visitTimes++;
-  if (!lookUpCookie(req.session._ctx.headers.cookie, cookieDataBase)) {
-    countVisitors++;
-    cookieDataBase[req.session.user_id] = req.session._ctx.headers.cookie;
-    console.log(req.session._ctx.headers.cookie);
+  //store visit time of each shortURL 
+  const today = new Date();
+  const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  urlDatabase[req.params.shortURL].visitTime.push(date + ' ' + time);
+  //store visitor ID of each shortURL 
+  urlDatabase[req.params.shortURL].visitorId.push(generateRandomString());
+  //count unique visitor cookie
+  if (!lookUpCookie(req.session._ctx.headers.cookie, urlDatabase[req.params.shortURL].visitorCookie)) {
+    urlDatabase[req.params.shortURL].visitorCookie.push(req.session._ctx.headers.cookie);
   }
+  //redirect to long url
   const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
