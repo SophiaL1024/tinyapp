@@ -6,14 +6,14 @@ const bcrypt = require('bcrypt');
 // const cookieParser = require('cookie-parser');
 const methodOverride = require('method-override');
 const { getUserByEmail, lookUpCookie, generateRandomString, urlsForUser } = require('./helpers');
-const { urlDatabase, users } = require('./database')
+const { urlDatabase, users } = require('./database');
 const app = express();
 // app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieSession({
   name: 'myCookieSession',
   keys: ['it is my key', 'you should not peep']
-}))
+}));
 app.use(methodOverride('_method'));
 app.set('view engine', 'ejs');
 
@@ -24,7 +24,7 @@ app.get('/urls', (req, res) => {
     const templateVars = {
       user: users[req.session.user_id],
       message: "Please log in first."
-    }
+    };
     res.render('urls_index', templateVars);
   } else {
     const templateVars = {
@@ -44,7 +44,7 @@ app.get('/urls/new', (req, res) => {
   } else {
     const templateVars = {
       user: users[req.session.user_id],
-      urlDatabase      
+      urlDatabase
     };
     res.render('urls_new', templateVars);
   }
@@ -56,7 +56,7 @@ app.get('/urls/:shortURL', (req, res) => {
     res.redirect('/login');
   } else {
     const templateVars = {
-      //define shortURL by route parameters 
+      //define shortURL by route parameters
       shortURL: req.params.shortURL,
       longURL: urlDatabase[req.params.shortURL].longURL,
       user: users[req.session.user_id],
@@ -69,12 +69,12 @@ app.get('/urls/:shortURL', (req, res) => {
 
 
 app.get("/u/:shortURL", (req, res) => {
-  //store visit time of each shortURL 
+  //store visit time of each shortURL
   const today = new Date();
   const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
   const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
   urlDatabase[req.params.shortURL].visitTime.push(date + ' ' + time);
-  //store visitor ID of each shortURL 
+  //store visitor ID of each shortURL
   urlDatabase[req.params.shortURL].visitorId.push(generateRandomString());
   //count unique visitor cookie
   if (!lookUpCookie(req.session._ctx.headers.cookie, urlDatabase[req.params.shortURL].visitorCookie)) {
@@ -108,11 +108,11 @@ app.post('/urls', (req, res) => {
   const newShortUrl = generateRandomString();
   urlDatabase[newShortUrl] = {};
   urlDatabase[newShortUrl].longURL = req.body.longURL;
-  //add user_id to the urlDatabase 
+  //add user_id to the urlDatabase
   urlDatabase[newShortUrl].ID = req.session.user_id;
-  urlDatabase[newShortUrl].visitTime=[];
-  urlDatabase[newShortUrl].visitorId=[];
-  urlDatabase[newShortUrl].visitorCookie=[];
+  urlDatabase[newShortUrl].visitTime = [];
+  urlDatabase[newShortUrl].visitorId = [];
+  urlDatabase[newShortUrl].visitorCookie = [];
   res.redirect(`/urls/${newShortUrl}`);
 });
 
@@ -158,7 +158,7 @@ app.post('/login', (req, res) => {
 
 
 //store register information in users object
-//set a user_id cookie 
+//set a user_id cookie
 app.post('/register', (req, res) => {
   //judge if the registration information is valide
   if (!req.body.email || !req.body.password) {
@@ -192,7 +192,7 @@ app.post('/register', (req, res) => {
 app.post('/logout', (req, res) => {
   req.session = null;
   res.redirect('/urls');
-})
+});
 
 
 app.listen(PORT, () => {

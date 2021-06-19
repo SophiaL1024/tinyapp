@@ -5,21 +5,26 @@
       aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup"
+      style="display: flex; justify-content: space-between;">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
       <% if(user){%>
-        <div style="margin: 0 15px; ">Logged In As: <%= user.email %>
+        <div style="display: flex;">
+          <div style="margin: 0 15px; ">Logged In As: <%= user.email %>
+          </div>
+          <form action="/logout" method="POST"><button
+              style="background-color:transparent;border-radius: 5px;width: 90px;height: 40px;">Logout</button></form>
         </div>
-        <form action="/logout" method="POST"><button
-            style="background-color:transparent;border-radius: 5px;width: 90px;height: 40px;">Logout</button></form>
         <%}else{%>
+          <div>
           <a class="nav-item nav-link" href="/login"
             style="text-decoration: none;color:rgba(255, 255, 255, 0.5);margin-right: 20px;">Login</a>
           <a class="nav-item nav-link" href="/register"
             style="text-decoration: none;color:rgba(255, 255, 255, 0.5);">Register</a>
+          </div>
           <%}%>
     </div>
   </nav>

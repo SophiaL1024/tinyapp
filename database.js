@@ -29,9 +29,9 @@ const users = {
     email: "user2@example.com",
     password: bcrypt.hashSync("dishwasher-funk", 10)
   }
-}
+};
 
-module.exports={
+module.exports = {
   urlDatabase,
   users
-}
+};

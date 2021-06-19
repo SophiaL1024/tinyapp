@@ -1,4 +1,4 @@
-const { urlDatabase, users } = require('./database')
+const { urlDatabase, users } = require('./database');
 //look up given email in the users database
 const getUserByEmail = function(email, database) {
   for (const user in database) {
@@ -27,7 +27,7 @@ const generateRandomString = function() {
   }
   return result;
 };
-//create url database for each user 
+//create url database for each user
 const urlsForUser = function(id) {
   const userDataBase = {};
   for (const shortURL in urlDatabase) {
@@ -36,7 +36,7 @@ const urlsForUser = function(id) {
     }
   }
   return userDataBase;
-}
+};
 module.exports = {
   getUserByEmail,
   lookUpCookie,
