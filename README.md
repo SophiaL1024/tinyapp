@@ -9,17 +9,19 @@ You can:
 
 ## Final Product
 
-!["screenshot description"](https://github.com/SophiaL1024/tinyapp/blob/master/docs/index-page.png)
-!["screenshot description"](https://github.com/SophiaL1024/tinyapp/blob/master/docs/edit-page.png)
+!["Create my short URLs"](https://github.com/SophiaL1024/tinyapp/blob/master/docs/Create%20new%20short%20URL.png?raw=true)
+!["Administrate my URLs"](https://github.com/SophiaL1024/tinyapp/blob/master/docs/Administrate%20my%20URLs.png?raw=true)
+!["Edit my URLs"](https://github.com/SophiaL1024/tinyapp/blob/master/docs/Edit%20my%20short%20URLs.png?raw=true)
 
 ## Dependencies
 
-- Node.js
-- Express
-- EJS
-- bcrypt
-- body-parser
-- cookie-session
+- Node.js ^12.12.0
+- Express ^4.17.1
+- EJS ^3.1.6
+- bcrypt ^5.0.1
+- body-parser ^1.19.0
+- cookie-session ^1.4.0
+- method-override: ^3.0.0
 
 ## Getting Started
 
